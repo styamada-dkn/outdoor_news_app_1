@@ -31,20 +31,25 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'nickname' => ['required', 'string', 'max:10'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'image' => ['string', 'max:255'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'nickname' => $request->nickname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'image' => $request->image,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
+        // コメント::登録後ログイン状態にしない
+        // Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return to_route('profile.index')->with('message',"ユーザ登録完了しました");
     }
 }
