@@ -20,7 +20,7 @@ class BlogFactory extends Factory
         return [
             'news_date'=>fake()->date($format = 'Y-m-d',$max = 'now'),
             'title'=>fake()->realText(20),
-            'image'=>'/images/admin/sample1.jpg',
+            // 'image'=>'/images/admin/sample1.jpg',
             'body'=>fake()->realText(200),
             'category_id'=>fake()->numberBetween(1,5),
             'user_id'=>User::factory(),
