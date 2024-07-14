@@ -129,4 +129,5 @@ return [
         // "Example" => App\Facades\Example::class,
     ])->toArray(),
 
+    'livewire_route_subdir' => env('LIVEWIRE_ROUTE_SUBDIR',''),
 ];

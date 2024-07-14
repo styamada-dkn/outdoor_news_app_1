@@ -6,6 +6,15 @@ use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SiteInfoController;
 use Illuminate\Support\Facades\Route;
+use Livewire\Livewire;
+
+Livewire::setScriptRoute(function ($handle) {
+    return Route::get(config('app.livewire_route_subdir') . '/livewire/livewire.js', $handle);
+});
+
+Livewire::setUpdateRoute(function($handle) {
+    return Route::get(config('app.livewire_route_subdir') . '/livewire/update', $handle);
+});
 
 // トップ画面
 Route::get('/', [BlogController::class, 'index'])->name('home');
