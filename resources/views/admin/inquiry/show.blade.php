@@ -58,9 +58,7 @@
             for="body">本文</label>
           <textarea id="body"
             class="mb-2 block w-full rounded border px-4 py-3 text-sm text-gray-500"
-            name="field-name" rows="5" disabled>
-            {{ $inquiry->body }}
-            </textarea>
+            name="field-name" rows="5" disabled>{{ $inquiry->body }}</textarea>
         </div>
       </div>
     </div>
