@@ -17,8 +17,8 @@
 
 サービスURL  
 
-[ユーザ画面](https://greentrees.sakura.ne.jp/outdoor_news)
-[管理画面<要ログイン>](https://greentrees.sakura.ne.jp/outdoor_news/dashboard)
+1. [ユーザ画面](https://greentrees.sakura.ne.jp/outdoor_news)
+1. [管理画面<要ログイン>](https://greentrees.sakura.ne.jp/outdoor_news/dashboard)
 
 ---
 ### 2.機能一覧
