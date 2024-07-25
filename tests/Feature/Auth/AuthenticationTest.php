@@ -2,53 +2,104 @@
 
 namespace Tests\Feature\Auth;
 
+use PHPUnit\Framework\Attributes\Test;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_login_screen_can_be_rendered(): void
+    private $user;
+
+    public function setUp():void
+    {
+        // 親のsetUpメソッド呼び出し
+        parent::setUp();
+
+        // ログイン用テストユーザ作成
+        $this->user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => Hash::make('12345678'),
+        ]);
+    }
+    #[Test]
+    public function ログイン画面の表示(): void
     {
         $response = $this->get('/login');
 
         $response->assertStatus(200);
     }
 
-    public function test_users_can_authenticate_using_the_login_screen(): void
+    #[Test]
+    public function ログイン成功(): void
     {
-        $user = User::factory()->create();
-
         $response = $this->post('/login', [
-            'email' => $user->email,
-            'password' => 'password',
+            'email' => $this->user->email,
+            'password' => '12345678',
         ]);
-
+        // 認証されている
         $this->assertAuthenticated();
+        // ログイン成功後に管理画面にリダイレクト
         $response->assertRedirect(route('dashboard', absolute: false));
+
+        $this->get(route('dashboard'))
+            ->assertSee('ログインしました');
     }
 
-    public function test_users_can_not_authenticate_with_invalid_password(): void
+    #[Test]
+    public function ログイン失敗(): void
     {
-        $user = User::factory()->create();
+        // emailが不一致の場合
+        $this->from('/login')
+        ->post('/login', [
+            'email' => 'emailtest@example.com',
+            'password' => '12345678',
+        ])
+        ->assertRedirect(route('login'))
+        ->assertInvalid(['email' => 'ログイン情報が存在しません。']);
 
-        $this->post('/login', [
-            'email' => $user->email,
+       // emailが未入力の場合
+       $this->from('/login')
+       ->post('/login', [
+           'email' => '',
+           'password' => '12345678',
+       ])
+       ->assertRedirect(route('login'))
+       ->assertInvalid(['email' => 'メールアドレスは必ず指定してください。']);
+
+        // パスワードが不一致の場合
+        $this->from('/login')
+        ->post('/login', [
+            'email' => $this->user->email,
             'password' => 'wrong-password',
-        ]);
+        ])
+        ->assertRedirect(route('login'))
+        ->assertInvalid(['email' => 'ログイン情報が存在しません。']);
 
+         // パスワードが未入力の場合
+         $this->from('/login')
+         ->post('/login', [
+             'email' => $this->user->email,
+             'password' => '',
+         ])
+         ->assertRedirect(route('login'))
+         ->assertInvalid(['password' => 'パスワードは必ず指定してください。']);
+
+        // 認証されていない
         $this->assertGuest();
     }
 
-    public function test_users_can_logout(): void
+    #[Test]
+    public function ログアウト(): void
     {
-        $user = User::factory()->create();
+        $response = $this->actingAs($this->user)->post('/logout');
 
-        $response = $this->actingAs($user)->post('/logout');
-
+        // 認証されていない
         $this->assertGuest();
-        $response->assertRedirect('/');
+        // ログアウト後にログイン画面にリダイレクト
+        $response->assertRedirect(route('dashboard'));
     }
 }

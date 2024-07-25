@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        // コメント::登録後ログイン状態にしない
+        // コメント::登録後ログイン状態にしない（初回時は他ユーザーにより登録されるため）
         // Auth::login($user);
 
         return to_route('profile.index')->with('message',"ユーザ登録完了しました");

@@ -46,7 +46,7 @@ Route::get('/site/info', [SiteInfoController::class, 'indexWithInfo'])->name('in
 
 //管理画面▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽▽
 Route::get('/dashboard', [BlogController::class, 'indexByUserId'])
-    ->middleware(['auth', 'verified'])
+    ->middleware('auth')
     ->name('dashboard');
 
 // ニュース情報
@@ -61,7 +61,7 @@ Route::prefix("/admin")
                 Route::get('blogs/create', [BlogController::class, 'create'])->name('blog.create');
                 Route::post('blogs', [BlogController::class, 'store'])->name('blog.store');
                 Route::get('blogs/{blog}', [BlogController::class, 'edit'])->name('blog.edit')->can('update', 'blog');
-                Route::put('blogs/{blog}', [BlogController::class, 'update'])->name('blog.update');
+                Route::put('blogs/{blog}', [BlogController::class, 'update'])->name('blog.update')->can('update', 'blog');
                 Route::delete('blogs/{blog}', [BlogController::class, 'destroy'])->name('blog.destroy')->can('delete', 'blog');
             });
     });
